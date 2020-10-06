@@ -81,4 +81,39 @@ clean:
 	$(RM) bench_cpy.txt bench_ref.txt ref.txt cpy.txt
 	$(RM) *.csv
 
+plot_test_front:: $(TESTS)
+	echo 3 | sudo tee /proc/sys/vm/drop_caches;
+	sudo perf stat --repeat 100 \
+                ./test_common  CPY \
+		| grep -Eo '[0-9]+\.[0-9]+,[0-9]+\.[0-9]+' > my_cpy_front_data.csv
+	sudo perf stat --repeat 100 \
+		./test_common  REF \
+		| grep -Eo '[0-9]+\.[0-9]+,[0-9]+\.[0-9]+' > my_ref_front_data.csv
+plot_test_mid:: $(TESTS)
+	echo 3 | sudo tee /proc/sys/vm/drop_caches;
+	sudo perf stat --repeat 100 \
+                ./test_common  CPY \
+		| grep -Eo '[0-9]+\.[0-9]+,[0-9]+\.[0-9]+' > my_cpy_mid_data.csv
+	sudo perf stat --repeat 100 \
+		./test_common  REF \
+		| grep -Eo '[0-9]+\.[0-9]+,[0-9]+\.[0-9]+' > my_ref_mid_data.csv
+plot_test_rear:: $(TESTS)
+	echo 3 | sudo tee /proc/sys/vm/drop_caches;
+	sudo perf stat --repeat 100 \
+                ./test_common  CPY \
+		| grep -Eo '[0-9]+\.[0-9]+,[0-9]+\.[0-9]+' > my_cpy_rear_data.csv
+	sudo perf stat --repeat 100 \
+		./test_common  REF \
+		| grep -Eo '[0-9]+\.[0-9]+,[0-9]+\.[0-9]+' > my_ref_rear_data.csv
+plot_bit_test:: $(TESTS)
+	echo 3 | sudo tee /proc/sys/vm/drop_caches;
+	sudo perf stat --repeat 1 \
+                ./test_common  CPY \
+		| grep -Eo '[0-9]+\.[0-9]+,[0-9]+\.[0-9]+' > my_cpy_bit_data.csv
+	sudo perf stat --repeat 1 \
+		./test_common  REF \
+		| grep -Eo '[0-9]+\.[0-9]+,[0-9]+\.[0-9]+' > my_ref_bit_data.csv
+
+
+
 -include $(deps)
